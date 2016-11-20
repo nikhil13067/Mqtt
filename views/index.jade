@@ -1,0 +1,35 @@
+doctype html
+html
+  head
+    script(src='https://cdn.plot.ly/plotly-latest.min.js')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
+    script.
+      function fetchTemperature(data){
+          //////// This is the fuction which fetches the temperature from the server
+        $.getJSON("http://localhost:3000/data", function(result){
+          //consoe.log(result.value);
+          console.log(data[0].x);
+          var dt = new Date();
+          var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+          data[0].x.push(time);
+          data[0].y.push(result.temperature);
+          //$("div").append(result.value + "   " + $.now() + '</br>');
+          Plotly.newPlot('myDiv', data);
+        });
+      }
+      $(document).ready(function(){			/// This function calls fetchTemperature 10 times each second and plots a graph
+        var data = [
+          {
+            x: [],
+            y: [],
+            type: 'scatter'
+          }
+        ];
+        window.setInterval(function(){
+          fetchTemperature(data);
+        }, 100);
+      });
+  body
+    div
+    #myDiv(style='width: 480px; height: 400px;')
+      // Plotly chart will be drawn inside this DIV
